@@ -1,0 +1,5 @@
+{
+  "name": "Copy of MOODOO - Blended Learning Companion",
+  "description": "A blended learning web application accompanying the MOODOO book series. Features QR-based emotion check-ins, breathing exercises for kids, guidance scripts for parents/teachers, and an analytics dashboard for measuring educational impact.",
+  "requestFramePermissions": []
+}
