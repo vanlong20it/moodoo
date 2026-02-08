@@ -1,20 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { MOCK_ANALYTICS, EMOTION_COLORS } from '../constants';
+import { EMOTION_COLORS } from '../constants';
+import { AnalyticsData } from '../types';
 import { BrainCircuit, Download, Users } from 'lucide-react';
 import { generateDashboardInsight } from '../services/geminiService';
+import { getAnalyticsData, exportToCSV } from '../services/storageService';
 
 const Dashboard: React.FC = () => {
+  const [data, setData] = useState<AnalyticsData[]>([]);
   const [insight, setInsight] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Load data on mount
+  useEffect(() => {
+    const storedData = getAnalyticsData();
+    setData(storedData);
+  }, []);
 
   const handleGenerateInsight = async () => {
     setLoading(true);
     setInsight(null);
-    const result = await generateDashboardInsight(MOCK_ANALYTICS);
+    // Use the dynamic data for AI analysis
+    const result = await generateDashboardInsight(data);
     setInsight(result);
     setLoading(false);
   };
+
+  const handleExport = () => {
+    exportToCSV();
+  };
+
+  // Calculate total interactions for the summary card
+  const totalAllTime = data.reduce((acc, curr) => acc + curr.totalInteractions, 0);
 
   return (
     <div className="min-h-screen bg-slate-50 p-6 md:p-12">
@@ -25,7 +42,10 @@ const Dashboard: React.FC = () => {
             <p className="text-slate-500">Báo cáo hiệu quả & xu hướng cảm xúc lớp Mầm 1</p>
           </div>
           <div className="flex gap-3">
-             <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-slate-600 font-medium hover:bg-slate-50 transition-colors shadow-sm">
+             <button 
+                onClick={handleExport}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-slate-600 font-medium hover:bg-slate-50 transition-colors shadow-sm active:scale-95 transform"
+             >
                 <Download size={18} />
                 Xuất Báo Cáo
              </button>
@@ -41,8 +61,8 @@ const Dashboard: React.FC = () => {
                     </div>
                     <div>
                         <p className="text-sm text-slate-500 font-medium">Tổng tương tác</p>
-                        <h3 className="text-2xl font-bold text-slate-800">123</h3>
-                        <span className="text-xs text-green-600 font-medium">+12% so với tháng trước</span>
+                        <h3 className="text-2xl font-bold text-slate-800">{totalAllTime}</h3>
+                        <span className="text-xs text-green-600 font-medium">Dữ liệu thời gian thực</span>
                     </div>
                 </div>
             </div>
@@ -76,10 +96,10 @@ const Dashboard: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Trend Chart */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <h3 className="font-bold text-slate-800 mb-6">Xu Hướng Cảm Xúc (4 Tuần)</h3>
+                <h3 className="font-bold text-slate-800 mb-6">Xu Hướng Cảm Xúc</h3>
                 <div className="h-72 w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={MOCK_ANALYTICS}>
+                        <LineChart data={data}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                             <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} dy={10} />
                             <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
@@ -98,7 +118,7 @@ const Dashboard: React.FC = () => {
                 <h3 className="font-bold text-slate-800 mb-6">Phân Bố Cảm Xúc (Tổng quan)</h3>
                 <div className="h-72 w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                         <BarChart data={MOCK_ANALYTICS}>
+                         <BarChart data={data}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                             <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} dy={10} />
                             <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />

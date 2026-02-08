@@ -5,6 +5,7 @@ import { EmotionType } from '../types';
 import EmotionCheckIn from './EmotionCheckIn';
 import BreathingExercise from './BreathingExercise';
 import TeacherGuide from './TeacherGuide';
+import { saveCheckIn } from '../services/storageService';
 import { CheckCircle2, Home } from 'lucide-react';
 
 const MiniApp: React.FC = () => {
@@ -24,6 +25,14 @@ const MiniApp: React.FC = () => {
 
   const handleBreathingComplete = () => {
     setStep('activity');
+  };
+
+  const handleCompleteActivity = () => {
+    // Save data when the user selects a final need or completes the activity
+    if (selectedEmotion) {
+        saveCheckIn(selectedEmotion);
+    }
+    setStep('done');
   };
 
   const currentModule = selectedEmotion ? MODULES[selectedEmotion] : MODULES[EmotionType.HAPPY];
@@ -85,7 +94,7 @@ const MiniApp: React.FC = () => {
                             {['Một cái ôm', 'Uống nước', 'Ngồi yên một mình', 'Chơi tiếp'].map((need) => (
                                 <button 
                                     key={need}
-                                    onClick={() => setStep('done')}
+                                    onClick={handleCompleteActivity}
                                     className="w-full p-4 text-left rounded-xl bg-gray-50 hover:bg-indigo-50 border border-transparent hover:border-indigo-200 transition-colors font-medium text-gray-700"
                                 >
                                     {need}
