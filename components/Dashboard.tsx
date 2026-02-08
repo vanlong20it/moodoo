@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { AnalyticsData } from '../types';
-import { BrainCircuit, Download, Users, Home, Trash2, BarChart2 } from 'lucide-react';
+import { Lightbulb, Download, Users, Home, Trash2, BarChart2 } from 'lucide-react';
 import { generateDashboardInsight } from '../services/geminiService';
 import { getAnalyticsData, exportToCSV, clearData } from '../services/storageService';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +26,7 @@ const Dashboard: React.FC = () => {
     if (data.length === 0) return;
     setLoading(true);
     setInsight(null);
-    // Use the dynamic data for AI analysis
+    // Use the offline logic
     const result = await generateDashboardInsight(data);
     setInsight(result);
     setLoading(false);
@@ -104,21 +104,21 @@ const Dashboard: React.FC = () => {
                  <div className="flex items-start justify-between">
                     <div>
                         <h3 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
-                            <BrainCircuit className="text-purple-600" />
-                            Góc chuyên gia AI
+                            <Lightbulb className="text-yellow-500" />
+                            Phân tích số liệu
                         </h3>
-                        <p className="text-sm text-slate-500 mb-4">Phân tích xu hướng cảm xúc và gợi ý giải pháp sư phạm.</p>
+                        <p className="text-sm text-slate-500 mb-4">Tổng hợp xu hướng và đưa ra lời khuyên sư phạm.</p>
                     </div>
                     <button 
                         onClick={handleGenerateInsight}
                         disabled={loading || data.length === 0}
-                        className="px-4 py-2 bg-purple-600 text-white text-sm font-bold rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                        {loading ? 'Đang phân tích...' : 'Phân tích ngay'}
+                        {loading ? 'Đang xử lý...' : 'Phân tích ngay'}
                     </button>
                  </div>
                  {insight && (
-                     <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 text-slate-700 text-sm leading-relaxed animate-in fade-in">
+                     <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-100 text-slate-700 text-sm leading-relaxed animate-in fade-in whitespace-pre-line">
                          {insight}
                      </div>
                  )}
