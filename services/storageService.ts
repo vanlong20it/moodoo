@@ -1,5 +1,4 @@
 import { AnalyticsData, EmotionType } from '../types';
-import { MOCK_ANALYTICS } from '../constants';
 
 const STORAGE_KEY = 'MOODOO_ANALYTICS';
 
@@ -11,9 +10,8 @@ const initData = (): AnalyticsData[] => {
   if (stored) {
     return JSON.parse(stored);
   }
-  // Seed with mock data if empty
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(MOCK_ANALYTICS));
-  return MOCK_ANALYTICS;
+  // Initialize with empty array instead of mock data
+  return [];
 };
 
 /**
@@ -24,11 +22,18 @@ export const getAnalyticsData = (): AnalyticsData[] => {
 };
 
 /**
+ * Clear all data (for testing/reset)
+ */
+export const clearData = () => {
+  localStorage.removeItem(STORAGE_KEY);
+};
+
+/**
  * Save a new interaction
  */
 export const saveCheckIn = (emotion: EmotionType) => {
   const data = initData();
-  const currentLabel = 'Tuần này'; // Simulating grouping by current week/period
+  const currentLabel = 'Tuần này'; // Grouping for the current period
   
   let currentPeriod = data.find(d => d.date === currentLabel);
 
@@ -65,6 +70,11 @@ export const saveCheckIn = (emotion: EmotionType) => {
  */
 export const exportToCSV = () => {
   const data = getAnalyticsData();
+  
+  if (data.length === 0) {
+    alert("Chưa có dữ liệu để xuất!");
+    return;
+  }
   
   // Define headers
   const headers = ['Thời gian', 'Vui vẻ', 'Buồn bã', 'Tức giận', 'Sợ hãi', 'Ngạc nhiên', 'Tổng tương tác'];

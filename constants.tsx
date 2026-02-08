@@ -1,4 +1,4 @@
-import { EmotionType, LearningModule, ActivityContext, AnalyticsData } from './types';
+import { EmotionType, LearningModule, ActivityContext } from './types';
 import { Smile, Frown, Zap, AlertCircle, Heart } from 'lucide-react';
 import React from 'react';
 
@@ -91,10 +91,3 @@ export const MODULES: Record<EmotionType, LearningModule> = {
     },
   },
 };
-
-export const MOCK_ANALYTICS: AnalyticsData[] = [
-  { date: 'Tuần 1', happy: 12, sad: 5, angry: 8, scared: 4, surprised: 2, totalInteractions: 31 },
-  { date: 'Tuần 2', happy: 15, sad: 4, angry: 6, scared: 3, surprised: 3, totalInteractions: 31 },
-  { date: 'Tuần 3', happy: 18, sad: 2, angry: 4, scared: 2, surprised: 4, totalInteractions: 30 },
-  { date: 'Tuần 4', happy: 22, sad: 1, angry: 2, scared: 1, surprised: 5, totalInteractions: 31 },
-];
